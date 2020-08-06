@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <title>Premium Roasted Coffee Bean</title>
+
+        <!--Google Noto Sans Light-->
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+
+        <!--Google Black Sans-->
+        <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+        <!--Bootstrap CSS-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+              crossorigin="anonymous">
+
+        <!--jQuert Imported-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!--Javascript Alert-->
+        <script>
+            function order() {
+                let name = $("#order-name").val();
+                let count = $("#order-count").val();
+                let address = $("#order-address").val();
+                let phone = $("#order-phone").val();
+
+
+                if (name == "") {
+                    alert("이름을 입력해주세요")
+                    return
+                } else if (count == "--수량을 선택해주세요--") {
+                    alert("수량을 체크해주세요")
+                    return
+                } else if (address == "") {
+                    alert("배송지를 입력해주세요")
+                    return
+                } else if (phone == "") {
+                    alert("연락처를 입력해주세요")
+                    return
+                }
+            }
+
+                $.ajax(
+                    {
+                        type: "GET",
+                        url: "https://api.manana.kr/exchange/rate.json",
+                        data: {},
+                        success: function (response) {
+                            for (let i = 0; i < response.length; i++) {
+                                if (response[i]['name'] == 'USDKRW=X') {
+                                    $('#exchange2').text(response[i]['rate'])
+                                }
+                            }
+                        }
+                    }
+                )
+
+        </script>
+
+        <style>
+            * div:not(.main-title) {
+                font-family: 'Noto Sans KR', sans-serif;
+            }
+
+            .main-title {
+                font-family: 'Black Han Sans', sans-serif;
+                font-size: 18px;
+                margin-bottom: -13px;
+                color: rosybrown;
+            }
+
+            .wrap {
+                width: 530px;
+                margin: auto;
+            }
+
+            .title-image {
+                background-color: lightgray;
+                width: 500px;
+                height: 300px;
+                background-image: url('https://www.arcgis.com/sharing/rest/content/items/f1c441244cdf4873bb345d6b498d193a/resources/1576116430826.jpeg?w=3068');
+                background-position: center;
+                background-size: cover;
+                border-radius: 5px;
+                margin-bottom: 30px;
+                margin-top: 30px;
+            }
+
+            h1, h6 {
+                display: inline;
+                line-height: 40px;
+            }
+
+            .contents {
+                margin-bottom: 25px;
+            }
+
+            h1 {
+                font-weight: bolder;
+            }
+
+            h6 {
+                color: gray;
+            }
+
+            .order-button {
+                text-align: center;
+                margin-bottom: 50px;
+            }
+
+            .exchange {
+                color: blue;
+                font-weight: bolder;
+                margin-bottom: 20px;
+                margin-top: -10px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="title-image"><!----></div>
+            <div class="title-text">
+                <div class="main-title">
+                    <p>PREMIUM ROASTED COFFEE BEAN</p>
+                </div>
+                <div class="contents">
+                    <h1>커피콩을 판매합니다 </h1>
+                    <h6>가격: 10,000원/1봉</h6>
+                    <p>선별된 커피콩만을 볶아 특유의 산미와 풍미가 느껴집니다. 직접 갈아내어 커피를 내리면 가장 맛있습니다.</p>
+                </div>
+                <div class="exchange">
+                    달러-원 환율:
+                    <span id="exchange2">0000.0</span>
+                </div>
+            </div>
+            <div class="custom-box">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">주문자명</span>
+                    </div>
+                    <input id="order-name" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="order-count">주문수량</label>
+                    </div>
+                    <select id="order-count" class="custom-select">
+                        <option selected>--수량을 선택해주세요--</option>
+                        <option value="1">1봉지</option>
+                        <option value="2">2봉지</option>
+                        <option value="3">3봉지</option>
+                    </select>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">배 송 지</span>
+                    </div>
+                    <input id="order-address" type="text" class="form-control">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">연 락 처</span>
+                    </div>
+                    <input id="order-phone" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="order-button">
+                <button onclick="order()" type="button" class="btn btn-secondary btn-lg">주문하기</button>
+            </div>
+        </div>
+    </body>
+</html>
