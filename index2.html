@@ -40,22 +40,71 @@
                     alert("연락처를 입력해주세요")
                     return
                 }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/order",
+                    data: {name_give: name, count_give: count, address_give: address, phone_give: phone},
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('주문이 완료되었습니다');
+                            window.location.reload();
+                        }
+                    }
+                })
+
             }
 
+            $(document).ready(function () {
+                $("#orders-box").html("");
+                showOrders();
+            });
+
+            function showOrders() {
+                // 주문 목록보기 API 를 사용해 여기를 채워주세요
                 $.ajax(
                     {
                         type: "GET",
-                        url: "https://api.manana.kr/exchange/rate.json",
+                        url: "/order",
                         data: {},
                         success: function (response) {
-                            for (let i = 0; i < response.length; i++) {
-                                if (response[i]['name'] == 'USDKRW=X') {
-                                    $('#exchange2').text(response[i]['rate'])
+                            if (response['result'] == 'success') {
+                                let orders = response['orders']
+                                for (let i = 0; i < orders.length; i++) {
+                                    makeOrderRow(orders[i]['name'], orders[i])['count'], orders[i]['address'], orders[i]['phone']
                                 }
+                            } else {
+                                alert('주문을 받아오지 못했습니다')
+                            }
+                        }
+                    })
+            }
+
+            function makeOrderRow(name, count, address, phone) {
+                let html_temp = `<tr>
+                            <td>${name}</td>
+                            <td>${count}</td>
+                            <td>${address}</td>
+                            <td>${phone}</td>
+                        </tr>`;
+
+                $("#orders-box").append(html_temp);
+            }
+
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "https://api.manana.kr/exchange/rate.json",
+                    data: {},
+                    success: function (response) {
+                        for (let i = 0; i < response.length; i++) {
+                            if (response[i]['name'] == 'USDKRW=X') {
+                                $('#exchange2').text(response[i]['rate'])
                             }
                         }
                     }
-                )
+                }
+            )
 
         </script>
 
@@ -122,53 +171,75 @@
     <body>
         <div class="wrap">
             <div class="title-image"><!----></div>
-            <div class="title-text">
-                <div class="main-title">
-                    <p>PREMIUM ROASTED COFFEE BEAN</p>
+            <div class="info">
+                <div class="title-text">
+                    <div class="main-title">
+                        <p>PREMIUM ROASTED COFFEE BEAN</p>
+                    </div>
+                    <div class="contents">
+                        <h1>커피콩을 판매합니다 </h1>
+                        <h6>가격: 10,000원/1봉</h6>
+                        <p>선별된 커피콩만을 볶아 특유의 산미와 풍미가 느껴집니다. 직접 갈아내어 커피를 내리면 가장 맛있습니다.</p>
+                    </div>
+                    <div class="exchange">
+                        달러-원 환율:
+                        <span id="exchange2">0000.0</span>
+                    </div>
                 </div>
-                <div class="contents">
-                    <h1>커피콩을 판매합니다 </h1>
-                    <h6>가격: 10,000원/1봉</h6>
-                    <p>선별된 커피콩만을 볶아 특유의 산미와 풍미가 느껴집니다. 직접 갈아내어 커피를 내리면 가장 맛있습니다.</p>
+                <div class="custom-box">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">주문자명</span>
+                        </div>
+                        <input id="order-name" type="text" class="form-control">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="order-count">주문수량</label>
+                        </div>
+                        <select id="order-count" class="custom-select">
+                            <option selected>--수량을 선택해주세요--</option>
+                            <option value="1">1봉지</option>
+                            <option value="2">2봉지</option>
+                            <option value="3">3봉지</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">배 송 지</span>
+                        </div>
+                        <input id="order-address" type="text" class="form-control">
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">연 락 처</span>
+                        </div>
+                        <input id="order-phone" type="text" class="form-control">
+                    </div>
                 </div>
-                <div class="exchange">
-                    달러-원 환율:
-                    <span id="exchange2">0000.0</span>
+                <div class="order-button">
+                    <button onclick="order()" type="button" class="btn btn-secondary btn-lg">주문하기</button>
                 </div>
             </div>
-            <div class="custom-box">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">주문자명</span>
-                    </div>
-                    <input id="order-name" type="text" class="form-control">
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="order-count">주문수량</label>
-                    </div>
-                    <select id="order-count" class="custom-select">
-                        <option selected>--수량을 선택해주세요--</option>
-                        <option value="1">1봉지</option>
-                        <option value="2">2봉지</option>
-                        <option value="3">3봉지</option>
-                    </select>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">배 송 지</span>
-                    </div>
-                    <input id="order-address" type="text" class="form-control">
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">연 락 처</span>
-                    </div>
-                    <input id="order-phone" type="text" class="form-control">
-                </div>
-            </div>
-            <div class="order-button">
-                <button onclick="order()" type="button" class="btn btn-secondary btn-lg">주문하기</button>
+            <div class="orders">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">이름</th>
+                            <th scope="col">수량</th>
+                            <th scope="col">주소</th>
+                            <th scope="col">전화번호</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-box">
+                        <tr>
+                            <td>나</td>
+                            <td>1</td>
+                            <td>서울시 동작구 상도동</td>
+                            <td>010-0000-0000</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </body>
