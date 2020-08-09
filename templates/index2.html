@@ -71,7 +71,7 @@
                             if (response['result'] == 'success') {
                                 let orders = response['orders']
                                 for (let i = 0; i < orders.length; i++) {
-                                    makeOrderRow(orders[i]['name'], orders[i])['count'], orders[i]['address'], orders[i]['phone']
+                                    makeOrderRow(orders[i]['name'], orders[i]['count'], orders[i]['address'], orders[i]['phone'])
                                 }
                             } else {
                                 alert('주문을 받아오지 못했습니다')
